@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -43,7 +42,6 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
     File file = new File(fileDir, "JonBotSettings.txt");
     //--------------------------------------------------------------------------Mouse and Keyboard Manipulation and Data
     Robot robot;
-    Robot comboBot;
     PointerInfo pointer = MouseInfo.getPointerInfo();
     Point coord = pointer.getLocation();
     //--------------------------------------------------------------------------Color comparions
@@ -336,8 +334,6 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
     public GUI() throws IOException, AWTException {
 
         robot = new Robot();
-        comboBot = new Robot();
-        comboBot.setAutoDelay(1003);
         robot.setAutoDelay(0);
 
         int bitType = Integer.valueOf(System.getProperty("sun.arch.data.model"));
@@ -367,15 +363,12 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
         activateAll();
         pauseCheck.setVisible(false);
 
-//        String emailtest = "test";
-//        System.out.println(UUID.nameUUIDFromBytes(emailtest.getBytes()));
     }
 
     //--------------------------------------------------------------------------listen for hotkey
     @Override
     public void onHotKey(int aIdentifier) {
         if (aIdentifier == 1) {
-            System.out.println("works");
             combo();
         }
         if (aIdentifier == 2) {
@@ -385,18 +378,18 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
 
     //--------------------------------------------------------------------------cast attack combo
     private void combo() {
-        comboBot.keyPress(KeyEvent.VK_4);
+        robot.keyPress(KeyEvent.VK_4);
         canCast = false;
-        comboBot.keyPress(KeyEvent.VK_3);
+        robot.keyPress(KeyEvent.VK_3);
         canCast = false;
-        comboBot.keyPress(KeyEvent.VK_2);
+        robot.keyPress(KeyEvent.VK_2);
         canCast = false;
-        comboBot.keyPress(KeyEvent.VK_1);
+        robot.keyPress(KeyEvent.VK_1);
         canCast = false;
-        comboBot.keyRelease(KeyEvent.VK_1);
-        comboBot.keyRelease(KeyEvent.VK_2);
-        comboBot.keyRelease(KeyEvent.VK_3);
-        comboBot.keyRelease(KeyEvent.VK_4);
+        robot.keyRelease(KeyEvent.VK_1);
+        robot.keyRelease(KeyEvent.VK_2);
+        robot.keyRelease(KeyEvent.VK_3);
+        robot.keyRelease(KeyEvent.VK_4);
     }
 
     private void load() throws IOException {
@@ -423,10 +416,6 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
         hpLowBox.setText(reader.readLine());
         mpRestoreBox.setText(reader.readLine());
         mpCriticalBox.setText(reader.readLine());
-
-        //----------------------------------------------------------------------Load user registration
-        id = reader.readLine();
-        email = reader.readLine();
         reader.close();
 
     }
@@ -460,29 +449,20 @@ public class GUI extends javax.swing.JFrame implements HotkeyListener {
         writer.write(hpHighBox.getText() + "\n");
         writer.write(hpLowBox.getText() + "\n");
         writer.write(mpRestoreBox.getText() + "\n");
-        writer.write(mpCriticalBox.getText() + "\n");
-
-        //----------------------------------------------------------------------Finally write user registration
-        writer.write(id + "\n");
-        writer.write(email);
+        writer.write(mpCriticalBox.getText());
 
         writer.flush();
         writer.close();
     }
 
     private void getInput() {
-        id = JOptionPane.showInputDialog(null, "What is your unique id?", null);
-        email = JOptionPane.showInputDialog(null, "What is your email?", null);
-        if (id.equals(UUID.nameUUIDFromBytes(email.getBytes()).toString())) {
             isRegistered = true;
             activateAll();
-        }
     }
 
     private void activateAll() {
-        if (id.equals(UUID.nameUUIDFromBytes(email.getBytes()).toString())) {
             isRegistered = true;
-        }
+
 
         //----------------------------------------------------------------------Enable menu items
         menuLoad.setEnabled(isRegistered);
